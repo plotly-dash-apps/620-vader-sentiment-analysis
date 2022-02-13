@@ -1,19 +1,17 @@
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
-import plotly.graph_objs as go
+from dash import dcc
+from dash import html
 from dash.dependencies import Input, Output, State
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 
 
 ##### Define button style
-red_button_style = {'background-color': 'red',
+button_style = {'background-color': 'darkblue',
                     'color': 'white',
+                    'textAlign': 'center',
                     'height': '50px',
-                    'width': '100px',
-                    'margin-top': '50px',
-                    'margin-left': '50px'}
+                    'margin-top': '50px'}
 
 
 ########### Define your variables ######
@@ -42,12 +40,12 @@ def sentiment_scores(sentence):
         final="Neutral"
     # responses
     response1=f"Overall sentiment dictionary is : {sentiment_dict}"
-    response2=f"sentence was rated as {sentiment_dict['neg']*100}% Negative"
-    response3=f"sentence was rated as {sentiment_dict['neu']*100}% Neutral"
-    response4=f"sentence was rated as {sentiment_dict['pos']*100}% Positive"
+    response2=f"Sentence rated as {round(sentiment_dict['neg']*100, 2)}% Negative"
+    response3=f"Sentence rated as {round(sentiment_dict['neu']*100, 2)}% Neutral"
+    response4=f"Sentence rated as {round(sentiment_dict['pos']*100,2 )}% Positive"
     response5=f"Sentence Overall Rated As {final}"
-    # return (response1, response2, response3, response4, response5)
-    return response5
+    return response1, response2, response3, response4, response5
+
 
 ########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -59,9 +57,15 @@ app.title=tabtitle
 
 app.layout = html.Div(children=[
     html.H1(myheading1),
+    html.H2('Input:'),
     dcc.Input(id='user-input', value=initial_value, type='text', style={'width':'80%'}),
-    html.Button('Analyze!', id='submit-val', n_clicks=0, style=red_button_style),
-    html.Div(id='output-div-1', children="Vader finds your lack of faith disturbing!"),
+    html.Button('Analyze!', id='submit-val', n_clicks=0, style=button_style),
+    html.H2('Output:'),
+    html.Div(id='output-div-1'),
+    html.Div(id='output-div-2'),
+    html.Div(id='output-div-3'),
+    html.Div(id='output-div-4'),
+    html.H4(id='output-div-5'),
     html.Br(),
     html.A('Code on Github', href=githublink),
     html.Br(),
@@ -73,18 +77,19 @@ app.layout = html.Div(children=[
 ########## Define Callback
 @app.callback(
     Output(component_id='output-div-1', component_property='children'),
-    [Input(component_id='user-input', component_property='value'),
-    Input('submit-val', 'n_clicks')]
+    Output(component_id='output-div-2', component_property='children'),
+    Output(component_id='output-div-3', component_property='children'),
+    Output(component_id='output-div-4', component_property='children'),
+    Output(component_id='output-div-5', component_property='children'),
+    Input('submit-val', 'n_clicks'),
+    State(component_id='user-input', component_property='value')
 )
-def update_output(sentence, n_clicks):
-    if n_clicks==0:
-        message = "Vader finds your lack of faith disturbing!"
-    else:
-        message = sentiment_scores(sentence)
-        return message
+def update_output(n_clicks, sentence):
+    message = sentiment_scores(sentence)
+    return message
 
 
 
 ############ Deploy
 if __name__ == '__main__':
-    app.run_server()
+    app.run_server(debug=True)
