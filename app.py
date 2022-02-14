@@ -85,7 +85,7 @@ app.layout = html.Div(children=[
 )
 def update_output(n_clicks, sentence):
     if n_clicks==0:
-        message = 'No, I am your father','The force is with you, young Skywalker, but you are not a Jedi yet','I find your lack of faith disturbing','You are part of the rebel alliance and a traitor','Nooooooooooooo!!!!!'
+        message = 'Waiting for inputs','','','',''
         return message
     else:
         message = sentiment_scores(sentence)
