@@ -1,17 +1,13 @@
 import dash
-from dash import dcc
-from dash import html
+from dash import dcc, html
 from dash.dependencies import Input, Output, State
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-
-
 
 ##### Define button style
 button_style = {'background-color': 'darkblue',
                     'color': 'white',
                     'textAlign': 'center',
                 }
-
 
 ########### Define your variables ######
 
